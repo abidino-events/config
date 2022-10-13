@@ -1,0 +1,30 @@
+version: '3'
+
+volumes:
+  postgres_data:
+      driver: local
+
+services:
+  postgres:
+      image: postgres
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+      environment:
+        POSTGRES_DB: ${POSTGRESQL_DB}
+        POSTGRES_USER: ${POSTGRESQL_USER}
+        POSTGRES_PASSWORD: ${POSTGRESQL_PASS}
+  keycloak:
+      image: quay.io/keycloak/keycloak:legacy
+      environment:
+        DB_VENDOR: POSTGRES
+        DB_ADDR: postgres
+        DB_DATABASE: ${POSTGRESQL_DB}
+        DB_USER: ${POSTGRESQL_USER}
+        DB_SCHEMA: public
+        DB_PASSWORD:  ${POSTGRESQL_PASS}
+        KEYCLOAK_USER:  ${KEYCLOAK_USER}
+        KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
+      ports:
+        - 9001:8080
+      depends_on:
+        - postgres
