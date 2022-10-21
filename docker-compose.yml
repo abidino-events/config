@@ -1,31 +1,31 @@
 version: '3.8'
 
-volumes:
-  postgres_data:
-      driver: local
-
 services:
   postgres:
-      image: postgres:14
-      volumes:
-        - postgres_data:/var/lib/postgresql/data
-      environment:
-        POSTGRES_DB: ${POSTGRESQL_DB}
-        POSTGRES_USER: ${POSTGRESQL_USER}
-        POSTGRES_PASSWORD: ${POSTGRESQL_PASS}
-      ports:
-          - 5432:5432
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRESQL_DB}
+      POSTGRES_USER: ${POSTGRESQL_USER}
+      POSTGRES_PASSWORD: ${POSTGRESQL_PASS}
+    ports:
+      - 5432:5432
   keycloak:
-      image: quay.io/keycloak/keycloak:19.0.3
-      environment:
-        KC_DB: postgres
-        KC_DB_PASSWORD: ${POSTGRESQL_PASS}
-        KC_DB_URL: jdbc:postgresql://postgres/keycloak
-        KC_DB_USERNAME: ${POSTGRESQL_USER}
-        KEYCLOAK_ADMIN: ${KEYCLOAK_USER}
-        KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_PASSWORD}
-      ports:
-        - 9000:8080
-      command: start-dev
-      depends_on:
-          - postgres
+    image: quay.io/keycloak/keycloak
+    environment:
+      KC_DB: postgres
+      KC_DB_PASSWORD: ${POSTGRESQL_PASS}
+      KC_DB_URL: jdbc:postgresql://postgres/keycloak
+      KC_DB_USERNAME: ${POSTGRESQL_USER}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_PASSWORD}
+    ports:
+      - 9000:8080
+    command: start-dev
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
+    driver: local
